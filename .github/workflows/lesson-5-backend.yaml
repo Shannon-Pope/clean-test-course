@@ -12,8 +12,11 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
+      - name: disable Debug
+        run: |
+          sed -i 's/DEBUG = True/DEBUG = False/g' hangry_api/hangry_api/settings.py
       - name: PyCharm Python Security Scanner
-        uses: tonybaloney/pycharm-security@1.25.1
+        uses: tonybaloney/pycharm-security@1.25.1 
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
@@ -54,3 +57,12 @@ jobs:
         run: zip -r deploy.zip . -x '*.git*'
       - name: '**PLACEHOLDER** Deploy to Elastic Beanstalk'
         run: echo Placeholder for Deployment
+  security_test:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    steps:
+       name: ZAP Baseline Scan
+       uses: zaproxy/action-baseline@v0.15.0
+        with:
+          target: 'https://hangryhippo.quantic.host'
+          
