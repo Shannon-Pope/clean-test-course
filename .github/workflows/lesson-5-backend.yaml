@@ -23,7 +23,7 @@ jobs:
       - name: Run Bandit Security Scan
         run: bandit -r . -ll
   build_and_test:
-    needs
+    needs : [security_test]
     runs-on: ubuntu-latest
     defaults:
       run:
